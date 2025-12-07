@@ -156,7 +156,7 @@ const CareersForm = ({ selectedJob }) => {
       data.append("resume", formData.resume);
 
       const response = await axios.post(
-        "https://job-protal-fbct.onrender.com//api/applicants",
+        "http://localhost:9000/api/applicants",
         data,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
