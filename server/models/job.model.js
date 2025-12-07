@@ -4,9 +4,9 @@
 //  You shall not disclose such confidential information and shall use it only in accordance 
 //with the terms of the license agreement you entered into with [Rasa Consultancy Services].
 //  For more information, please contact: [Your Company Email/Legal Department Contact]
-const mongoose = require("mongoose");
+import { Schema, model } from "mongoose";
 
-const JobSchema = new mongoose.Schema(
+const JobSchema = new Schema(
   {
     title: { type: String, required: true },
     description: { type: String, required: true },
@@ -18,4 +18,4 @@ const JobSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Job", JobSchema);
+export default model("Job", JobSchema);

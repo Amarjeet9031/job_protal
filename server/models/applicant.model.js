@@ -5,9 +5,9 @@
 //with the terms of the license agreement you entered into with [Rasa Consultancy Services].
 //  For more information, please contact: [Your Company Email/Legal Department Contact]
 
-const mongoose = require("mongoose");
+import { Schema, model } from "mongoose";
 
-const applicantSchema = new mongoose.Schema({
+const applicantSchema = new Schema({
   name: { type: String, required: true },
   email: { type: String, required: true },
   phone: { type: String, required: true },
@@ -19,4 +19,4 @@ const applicantSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.model("Applicant", applicantSchema);
+export default model("Applicant", applicantSchema);
