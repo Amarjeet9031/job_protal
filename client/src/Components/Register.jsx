@@ -116,7 +116,7 @@ const Register = () => {
       if (response.status === 201) {
         playSingUpSound(); // Play success audio
         toast.success("User Registered successfully! Please Verify your Email");
-        setTimeout(() => navigate("/login"), 3000); // Redirect to login
+        setTimeout(() => navigate("/login"), 8000); // Redirect to login
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "Something went wrong"); // Show backend error
@@ -144,7 +144,7 @@ const Register = () => {
       if (res.status === 200) {
         if (res.data.isNewUser) {
           toast.success("Registered successfully! Please login.");
-          setTimeout(() => navigate("/login"), 3000);
+          setTimeout(() => navigate("/login"), 8000);
         } else {
           localStorage.setItem("token", res.data.token); // Save token
           localStorage.setItem("name", res.data.user.Fname); // Save user name

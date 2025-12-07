@@ -113,7 +113,7 @@ const Login = () => {
   useEffect(() => {
     let interval;
     if (showOtpForm && timer > 0) {
-      interval = setInterval(() => setTimer((prev) => prev - 1), 1000);
+      interval = setInterval(() => setTimer((prev) => prev - 1), 8000);
     } else if (timer <= 0 && showOtpForm) {
       setCanResend(true);
       toast.error("OTP expired! Please resend.");
@@ -138,7 +138,7 @@ const Login = () => {
   useEffect(() => {
     let lockInterval;
     if (lockTimer > 0) {
-      lockInterval = setInterval(() => setLockTimer((prev) => prev - 1), 1000);
+      lockInterval = setInterval(() => setLockTimer((prev) => prev - 1), 8000);
     }
     return () => clearInterval(lockInterval);
   }, [lockTimer]);
@@ -159,7 +159,7 @@ const Login = () => {
 
     try {
       const response = await axios.post("/api/auth/users/login", input, {
-        timeout: 6000,
+        timeout: 8000,
       });
 
       if (response.data.otpSent) {
@@ -328,7 +328,7 @@ const Login = () => {
 
       if (response.data.isNewUser) {
         toast.info("Email not registered! Please register first.");
-        setTimeout(() => navigate("/register"), 3000);
+        setTimeout(() => navigate("/register"), 8000);
         return;
       }
 
