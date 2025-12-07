@@ -82,7 +82,7 @@ static userRegistration = async (req, res) => {
         });
 
         // -------------------- Verification Link --------------------
-        const link = `http://localhost:9000/api/auth/verify/${token}`; // Construct verification link
+        const link = `https://job-protal-1-o4na.onrender.com/api/auth/verify/${token}`; // Construct verification link
         sendEmailtoUser(link, email); // Send verification email
 
         // -------------------- Save New User --------------------
