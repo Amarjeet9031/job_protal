@@ -19,11 +19,10 @@ import {
 } from "firebase/auth"; // Firebase social login utilities
 import { ToastContainer, toast } from "react-toastify"; // Toast notifications
 import "react-toastify/dist/ReactToastify.css";
-import refreshIcon from "../image/refresh-removebg-preview.png"; // CAPTCHA refresh icon
-import emailicon from '../image/tl.webp'; // Email icon
-import pwd from "../image/password-76.png"; // Password icon
+import refreshIcon from "../images/refresh-removebg-preview.png"; // CAPTCHA refresh icon
+import emailicon from '../images/tl.webp'; // Email icon
+import pwd from "../images/password-76.png"; // Password icon
 import audios from "../sound/success-340660.mp3"; // Success audio
-import dashboard from "../Components/DashBoard";
 
 // ---------------- UTILITY FUNCTIONS ----------------
 // Base64 encode/decode for storing password in cookies
@@ -193,7 +192,7 @@ const Login = () => {
 
         toast.success("Login successful!");
         setFailedAttempts(0);
-        navigate("/dashboard");
+        navigate("/");
       } else {
         toast.error("Unexpected response from server");
       }
@@ -258,7 +257,7 @@ const Login = () => {
       }
 
       toast.success("OTP verified! Login successful");
-      navigate("/dashboard");
+      navigate("/");
     } catch (err) {
       console.error("OTP verification error:", err);
       if (err.response?.status === 401) {
@@ -281,14 +280,12 @@ const Login = () => {
         Cookies.set("token", response.data.token, { expires: 7, secure: true, sameSite: "Strict" });
         Cookies.set("name", response.data.user?.Fname || "", { expires: 7, secure: true, sameSite: "Strict" });
         Cookies.set("email", response.data.user?.email || pendingEmail, { expires: 7, secure: true, sameSite: "Strict" }); // NEW
-       
-        
 
         saveRememberMe(input.email, input.password); 
 
         toast.success("Logged in successfully! Previous session ended.");
         setShowDevicePrompt(false);
-        navigate("/dashboard");
+        navigate("/");
       } else {
         toast.error("Force login failed: No token returned");
       }
@@ -340,7 +337,7 @@ const Login = () => {
 
         saveRememberMe(input.email, input.password); 
         toast.success("Login successful!");
-        navigate("/dashboard");
+        navigate("/");
       }
     } catch (err) {
       console.error("Google login error:", err);
@@ -394,7 +391,7 @@ const Login = () => {
         toast.success("Facebook login successful!");
 
         saveRememberMe(input.email, input.password); 
-        navigate("/dashboard");
+        navigate("/");
       }
     } catch (error) {
       console.error("Facebook login error:", error);
@@ -563,7 +560,7 @@ const Login = () => {
             Forgot Password?
           </p>
 
-            <p className="text-center my-3">Or</p>
+          <p className="text-center my-3">Or</p>
 
           {/* Social Login */}
           <button
@@ -697,8 +694,6 @@ const Login = () => {
           >
             Resend OTP
           </button>
-
-
         </form>
       )}
     </div>
