@@ -158,7 +158,7 @@ const Login = () => {
     }
 
     try {
-      const response = await axios.post("/api/auth/users/login", input, {
+      const response = await axios.post("https://job-protal-1-bwud.onrender.com/api/auth/users/login", input, {
         timeout: 15000,
       });
 
@@ -225,7 +225,7 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-        "/api/auth/verify-otp",
+        "https://job-protal-1-bwud.onrender.com/api/auth/verify-otp",
         { email: userEmail, otp },
         { timeout: 10000 }
       );
@@ -273,7 +273,7 @@ const Login = () => {
   const forceLogin = async () => {
     veriFyOtpSound();
     try {
-      const response = await axios.post("/api/auth/users/forceLogout", {
+      const response = await axios.post("https://job-protal-1-bwud.onrender.com/api/auth/users/forceLogout", {
         token: pendingToken,
         email: pendingEmail,
       });
@@ -316,7 +316,7 @@ const Login = () => {
       const user = result.user;
 
       const response = await axios.post(
-        "/api/auth/users/google-login",
+        "https://job-protal-1-bwud.onrender.com/api/auth/users/google-login",
         {
           email: user.email,
           uid: user.uid,
@@ -369,7 +369,7 @@ const Login = () => {
       const user = result.user;
 
       const response = await axios.post(
-        "/api/auth/users/facebook-login",
+        "https://job-protal-1-bwud.onrender.com/api/auth/users/facebook-login",
         {
           email: user.email,
           uid: user.uid,
