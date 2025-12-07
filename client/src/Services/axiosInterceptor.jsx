@@ -6,7 +6,7 @@
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: "http://localhost:9000/",
+  baseURL: "https://job-protal-1-bwud.onrender.com/",
   timeout: 2000,
 });
 

@@ -749,7 +749,7 @@ static logoutAllSessions = async (req, res) => {
             expiresIn: "5m",
           });
 
-          const link = `http://localhost:3000/user/reset/${isUser._id}/${token}`;
+          const link = `https://job-protal-1-bwud.onrender.com/user/reset/${isUser._id}/${token}`;
 
           // email sending
           const transport = nodemailer.createTransport({
