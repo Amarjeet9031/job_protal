@@ -11,7 +11,6 @@ import connectDB from "./config/db.js";
 import logger from "./logger.js";
 import morgan from "morgan";
 
-
 import authRoutes from "./routes/authRoutes.js";
 import jobRoutes from "./routes/job.routes.js";
 import applicantRoutes from "./routes/applicant.routes.js";
@@ -30,14 +29,13 @@ const PORT = process.env.PORT || 9000;
 // ================================
 app.use(cors());
 app.use(express.json());
-app.use("/uploads", express.static("uploads")); // Static file serving
+app.use(morgan("dev"));
+app.use("/uploads", express.static("uploads"));
 
-// ================================
-// API ROUTES
-// ================================
-app.use("/api/jobs", jobRoutes);
-app.use("/api/applicants", applicantRoutes);
-app.use("/api/auth", authRoutes);
+// Default test route — fixes Render 404 spam
+app.get("/", (req, res) => {
+  res.send("Job Portal Backend API is running 👍");
+});
 
 // ================================
 // CREATE HTTP SERVER
@@ -54,28 +52,39 @@ const io = new Server(server, {
   },
 });
 
-// Share IO instance with controllers
+// Pass io instance to controller
 setSocket(io);
 
-// Log events
+// Socket events
 io.on("connection", (socket) => {
-  console.log("🟢 Client connected:", socket.id);
+  logger.info(`🟢 Client connected: ${socket.id}`);
 
   socket.on("disconnect", () => {
-    console.log("🔴 Client disconnected:", socket.id);
+    logger.info(`🔴 Client disconnected: ${socket.id}`);
   });
 });
-logger.info("Server starting...");
-logger.error("Something went wrong");
-app.use(morgan("tiny"));
+
+// ================================
+// API ROUTES
+// ================================
+app.use("/api/jobs", jobRoutes);
+app.use("/api/applicants", applicantRoutes);
+app.use("/api/auth", authRoutes);
+
 // ================================
 // START SERVER
 // ================================
 const start = async () => {
-  await connectDB();
-  server.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`);
-  });
+  try {
+    logger.info("Starting server...");
+    await connectDB();
+
+    server.listen(PORT, () => {
+      logger.info(`🚀 Server running on port ${PORT}`);
+    });
+  } catch (error) {
+    logger.error("❌ Server failed to start: " + error.message);
+  }
 };
 
 start();
