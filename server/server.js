@@ -8,6 +8,9 @@ import cors from "cors";
 import http from "http";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
+import logger from "./logger.js";
+import morgan from "morgan";
+
 
 import authRoutes from "./routes/authRoutes.js";
 import jobRoutes from "./routes/job.routes.js";
@@ -62,7 +65,9 @@ io.on("connection", (socket) => {
     console.log("🔴 Client disconnected:", socket.id);
   });
 });
-
+logger.info("Server starting...");
+logger.error("Something went wrong");
+app.use(morgan("tiny"));
 // ================================
 // START SERVER
 // ================================
