@@ -10,10 +10,11 @@ import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import logger from "./logger.js";
 import morgan from "morgan";
-
+import adminRoutes from "./routes/adminRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import jobRoutes from "./routes/job.routes.js";
 import applicantRoutes from "./routes/applicant.routes.js";
+import path from "path";
 
 // Socket.io logic
 import { setSocket } from "./controllers/job.controller.js";
@@ -24,6 +25,7 @@ dotenv.config(); // Load .env
 const app = express();
 const PORT = process.env.PORT || 9000;
 
+const _dirname = path.resolve();
 // ================================
 // MIDDLEWARE
 // ================================
@@ -31,11 +33,12 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
 app.use("/uploads", express.static("uploads"));
+app.use("/api/admin", adminRoutes);
+
+app.use(express.static(path.join(_dirname, "/client/dist")));
 
 // Default test route — fixes Render 404 spam
-app.get("/", (req, res) => {
-  res.send("Job Portal Backend API is running 👍");
-});
+
 
 // ================================
 // CREATE HTTP SERVER
@@ -51,6 +54,10 @@ const io = new Server(server, {
     methods: ["GET", "POST", "PUT", "DELETE"],
   },
 });
+
+
+
+
 
 // Pass io instance to controller
 setSocket(io);
@@ -74,6 +81,13 @@ app.use("/api/auth", authRoutes);
 // ================================
 // START SERVER
 // ================================
+app.use(express.static(path.join(_dirname, "/client/dist")));
+
+// Fallback route for React (Express v5 compatible)
+app.get(/.*/, (req, res) => {
+  res.sendFile(path.resolve(_dirname, "client", "dist", "index.html"));
+});
+
 const start = async () => {
   try {
     logger.info("Starting server...");
@@ -88,3 +102,14 @@ const start = async () => {
 };
 
 start();
+
+
+
+
+// app.get("/", (req, res) => {
+//   res.send("Job Portal Backend API is running 👍");
+// });
+
+// app.get("/*", (req, res) => {
+//   res.sendFile(path.resolve(_dirname, "client", "dist", "index.html"));
+// });

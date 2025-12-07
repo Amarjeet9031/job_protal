@@ -28,8 +28,8 @@ import ProtectedRoutes from "./Services/ProtectedRoutes";
 
 import UserFrom from "./Components/UserFrom";
 import LiveChatBot from "./Components/LiveChatBot";
+import Admin from "../../server/models/Admin";
 
-// import Home from './components/Home';
 
 
 
@@ -46,21 +46,22 @@ function App() {
       <HelmetProvider>
         {/* <Navbar /> */}
         {!hidelayout && <Navbar />}
-       
+
 
         <Routes>
           <Route path="/" element={<Home />} />
+          {/* <Route path="/" element={<Admin />} /> */}
           <Route path="/ourservices" element={<OurServices />} />
           <Route path="/service/:id" element={<ServiceDetail />} />
           <Route path="/careers" element={<Careers />} />
           <Route path="/contactus" element={<ContactUs />} />
           <Route path="/reset-password" element={<ForgetPassword />} />
           <Route path="/user/reset/:id/:token" element={<ChangePassword />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<Admin />} />
           <Route path="/register" element={<Register />} />
           <Route path="/session-expired" element={<SessionExpired />} />
-          <Route path="/userFrom" element={<UserFrom/>} />
-        
+          <Route path="/userFrom" element={<UserFrom />} />
+
 
           {/* 🟢 Correct Protected Route Wrapper */}
           <Route element={<ProtectedRoutes />}>
@@ -71,8 +72,8 @@ function App() {
         {!hidelayout && <Footer />}
       </HelmetProvider>
 
-     
-    
+
+
     </>
   );
 }

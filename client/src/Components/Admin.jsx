@@ -1,89 +1,66 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import axios from "axios";
 
-const API_KEY = "EVQYITSKKJY8DUYDLH0X805YDLH0X"; // Replace with your MetalPriceAPI key
-const API_URL = `https://api.metalpriceapi.com/v1/latest?api_key=${API_KEY}&base=USD&currencies=XAU,XAG`;
+const API = "https://job-protal-fbct.onrender.com/api/admin";
 
-export default function HomePage() {
-  const [gold, setGold] = useState(null);
-  const [silver, setSilver] = useState(null);
-  const [loading, setLoading] = useState(true);
+export default function Admin() {
+  const [form, setForm] = useState({ username: "", password: "" });
+  const [message, setMessage] = useState("");
 
-  const fetchPrices = async () => {
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const signup = async () => {
     try {
-      const res = await fetch(API_URL);
-      const data = await res.json();
-
-      if (data && data.rates) {
-        setGold(data.rates.XAU); // gold price
-        setSilver(data.rates.XAG); // silver price
-        setLoading(false);
-      }
+      const res = await axios.post(`${API}/signup`, form, {
+        headers: { "Content-Type": "application/json" },
+      });
+      setMessage(res.data.message);
     } catch (error) {
-      console.error("Error fetching metal prices:", error);
+      setMessage("Signup failed.");
     }
   };
 
-  useEffect(() => {
-    fetchPrices(); // Initial load
+  const login = async () => {
+    try {
+      const res = await axios.post(`${API}/login`, form, {
+        headers: { "Content-Type": "application/json" },
+      });
 
-    const interval = setInterval(() => {
-      fetchPrices();
-    }, 5000); // Refresh every 5 seconds
+      setMessage(res.data.message);
 
-    return () => clearInterval(interval);
-  }, []);
+      if (res.data.token) {
+        localStorage.setItem("adminToken", res.data.token);
+      }
+    } catch (error) {
+      setMessage("Login failed.");
+    }
+  };
 
   return (
-    <div style={styles.container}>
-      <h1 style={styles.title}>Live Gold & Silver Price</h1>
+    <div style={{ width: "320px", margin: "80px auto", textAlign: "center" }}>
+      <h2>Admin Login / Signup</h2>
 
-      {loading ? (
-        <p style={styles.loading}>Loading data…</p>
-      ) : (
-        <div style={styles.card}>
-          <p style={styles.price}>
-            <strong>Gold (XAU):</strong> ${gold}
-          </p>
-          <p style={styles.price}>
-            <strong>Silver (XAG):</strong> ${silver}
-          </p>
-        </div>
-      )}
+      <input type="text" name="username" placeholder="Username"
+        value={form.username} onChange={handleChange}
+        style={{ width: "100%", padding: "10px", margin: "10px 0" }} />
 
-      <p style={styles.refresh}>Auto-refresh every 5 seconds</p>
+      <input type="password" name="password" placeholder="Password"
+        value={form.password} onChange={handleChange}
+        style={{ width: "100%", padding: "10px", margin: "10px 0" }} />
+
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <button onClick={signup} style={{ width: "48%", padding: "10px" }}>
+          Signup
+        </button>
+
+        <button onClick={login} style={{ width: "48%", padding: "10px" }}>
+          Login
+        </button>
+      </div>
+
+      {message && <p style={{ marginTop: "15px" }}>{message}</p>}
     </div>
   );
 }
-
-const styles = {
-  container: {
-    padding: "30px",
-    textAlign: "center",
-    fontFamily: "Arial",
-  },
-  title: {
-    fontSize: "28px",
-    marginBottom: "20px",
-  },
-  loading: {
-    fontSize: "20px",
-    color: "#555",
-  },
-  card: {
-    background: "#f5f5f5",
-    padding: "20px",
-    borderRadius: "10px",
-    width: "350px",
-    margin: "auto",
-    boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-  },
-  price: {
-    fontSize: "22px",
-    margin: "10px 0",
-  },
-  refresh: {
-    marginTop: "10px",
-    fontSize: "14px",
-    color: "gray",
-  },
-};

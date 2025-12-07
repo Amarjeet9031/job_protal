@@ -32,4 +32,4 @@ const emitJobUpdate = (data) => {
   }
 };
 
-module.exports = { initSocket, emitJobUpdate };
+export default { initSocket, emitJobUpdate };
