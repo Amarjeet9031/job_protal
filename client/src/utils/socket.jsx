@@ -5,7 +5,7 @@
 //with the terms of the license agreement you entered into with [Rasa Consultancy Services].
 //  For more information, please contact: [Your Company Email/Legal Department Contact]
 // ✅ Socket connection
-const socket = io("http://localhost:9000", {
+const socket = io("https://job-protal-1-o4na.onrender.com", {
   transports: ["websocket"],
   reconnectionAttempts: 5,
   reconnectionDelay: 1000,

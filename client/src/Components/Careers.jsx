@@ -15,7 +15,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 // ✅ Create socket connection outside the component (global)
-const socket = io("http://localhost:9000", {
+const socket = io("https://job-protal-1-o4na.onrender.com", {
   transports: ["websocket"],
   reconnectionAttempts: 5,
   reconnectionDelay: 1000,
@@ -61,7 +61,7 @@ const Careers = () => {
   // 📦 Fetch jobs from backend
   const fetchJobs = async () => {
     try {
-      const res = await axios.get("http://localhost:9000/api/jobs");
+      const res = await axios.get("https://job-protal-1-o4na.onrender.com/api/jobs");
       setJobs(res.data);
       setLoading(false);
     } catch (error) {
