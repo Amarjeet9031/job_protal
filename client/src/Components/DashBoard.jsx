@@ -33,7 +33,7 @@ const Dashboard = () => {
   const handleStatusChange = async (id, newStatus) => {
     try {
       const res = await axios.put(
-        `https://job-protal-1-o4na.onrender.com/api/applicants/${id}`,
+        `https://job-protal-fbct.onrender.com//api/applicants/${id}`,
         { status: newStatus }
       );
 
@@ -88,7 +88,7 @@ const Dashboard = () => {
 // 📦 Fetch Jobs with validation for specific fields
 const fetchJobs = async () => {
   try {
-    const res = await axios.get("https://job-protal-1-o4na.onrender.com/api/jobs");
+    const res = await axios.get("https://job-protal-fbct.onrender.com//api/jobs");
     const data = res.data;
 
     // Define the fields you want to validate
@@ -116,7 +116,7 @@ const fetchJobs = async () => {
   // 📦 Fetch Applicants
   const fetchApplicants = async () => {
     try {
-      const res = await axios.get("https://job-protal-1-o4na.onrender.com/api/applicants");
+      const res = await axios.get("https://job-protal-fbct.onrender.com//api/applicants");
       setApplicants(res.data);
     } catch (error) {
       console.error("Error fetching applicants:", error);
@@ -162,7 +162,7 @@ const fetchJobs = async () => {
     if (duplicate) return alert("⚠️ This job title already exists!");
 
     try {
-      const res = await axios.post("https://job-protal-1-o4na.onrender.com/api/jobs", newJob);
+      const res = await axios.post("https://job-protal-fbct.onrender.com//api/jobs", newJob);
       alert("✅ Job added successfully!");
       setJobs([...jobs, res.data]);
       resetForm();
@@ -184,7 +184,7 @@ const fetchJobs = async () => {
 
     try {
       const res = await axios.put(
-        `https://job-protal-1-o4na.onrender.com/api/jobs/${editId}`,
+        `https://job-protal-fbct.onrender.com//api/jobs/${editId}`,
         newJob
       );
       alert("✅ Job updated successfully!");
@@ -199,7 +199,7 @@ const fetchJobs = async () => {
   const handleDeleteJob = async (id) => {
     if (!window.confirm("Are you sure you want to delete this job?")) return;
     try {
-      await axios.delete(`https://job-protal-1-o4na.onrender.com/api/jobs/${id}`);
+      await axios.delete(`https://job-protal-fbct.onrender.com//api/jobs/${id}`);
       setJobs(jobs.filter((job) => job._id !== id));
       alert(" Job deleted successfully!");
     } catch (error) {
@@ -291,7 +291,7 @@ const fetchJobs = async () => {
   const handleDeleteApplicant = async (id) => {
     if (!window.confirm("Delete this applicant?")) return;
     try {
-      await axios.delete(`https://job-protal-1-o4na.onrender.com/api/applicants/${id}`);
+      await axios.delete(`https://job-protal-fbct.onrender.com//api/applicants/${id}`);
       setApplicants((prev) => prev.filter((a) => a._id !== id));
     } catch (error) {
       console.error("Error deleting applicant:", error);
@@ -673,7 +673,7 @@ const ApplicantSection = ({
                 <td className="border p-2">
                   {app.resumeUrl ? (
                     <a
-                      href={`https://job-protal-1-o4na.onrender.com/${app.resumeUrl}`}
+                      href={`https://job-protal-fbct.onrender.com//${app.resumeUrl}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-blue-600 hover:underline"
