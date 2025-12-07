@@ -69,7 +69,7 @@ const Login = () => {
   };
 
 
-// ---------------- OTP ANIMATION STATE ----------------
+  // ---------------- OTP ANIMATION STATE ----------------
   const [randomCode, setRandomCode] = useState(generateRandomCode());
   const [userCode, setUserCode] = useState("");
 
@@ -79,25 +79,25 @@ const Login = () => {
   const [otpSuccess, setOtpSuccess] = useState(false);
 
   // ---------------- Load remembered credentials ----------------
- useEffect(() => {
- const savedData = Cookies.get("rememberData");
-  if (savedData) {
-    try {
-      const { email, password } = JSON.parse(savedData);
-      setInput({
-        email: email || "",
-        password: password ? decode(password) : "",
-      });
-      setRememberMe(true);
-    } catch {
-      setInput((prev) => ({ ...prev, email: savedData }));
-      setRememberMe(true);
+  useEffect(() => {
+    const savedData = Cookies.get("rememberData");
+    if (savedData) {
+      try {
+        const { email, password } = JSON.parse(savedData);
+        setInput({
+          email: email || "",
+          password: password ? decode(password) : "",
+        });
+        setRememberMe(true);
+      } catch {
+        setInput((prev) => ({ ...prev, email: savedData }));
+        setRememberMe(true);
+      }
     }
-  }
-}, []);
+  }, []);
 
 
- // ---------------- PLAY SUCCESS AUDIO ----------------
+  // ---------------- PLAY SUCCESS AUDIO ----------------
   const veriFyOtpSound = () => {
     try {
       const OutSound = new Audio(audios); // use imported audio
@@ -143,7 +143,7 @@ const Login = () => {
     return () => clearInterval(lockInterval);
   }, [lockTimer]);
 
-    // ---------------- FORMAT TIMER ----------------
+  // ---------------- FORMAT TIMER ----------------
 
   const formatTime = (sec) => {
     const m = Math.floor(sec / 60).toString().padStart(2, "0");
@@ -159,7 +159,7 @@ const Login = () => {
 
     try {
       const response = await axios.post("/api/auth/users/login", input, {
-        timeout: 8000,
+        timeout: 15000,
       });
 
       if (response.data.otpSent) {
@@ -177,7 +177,7 @@ const Login = () => {
         Cookies.set("name", response.data.user?.Fname || "", { expires: 7, secure: true, sameSite: "Strict" });
         Cookies.set("email", response.data.user?.email || input.email, { expires: 7, secure: true, sameSite: "Strict" }); // NEW
 
-         saveRememberMe(input.email, input.password); //  Save Remember Me
+        saveRememberMe(input.email, input.password); //  Save Remember Me
 
         if (rememberMe) {
           Cookies.set(
@@ -241,7 +241,7 @@ const Login = () => {
       Cookies.set("token", response.data.token, { expires: 7, secure: true, sameSite: "Strict" });
       Cookies.set("name", response.data.user?.Fname || "", { expires: 7, secure: true, sameSite: "Strict" });
       Cookies.set("email", response.data.user?.email || userEmail, { expires: 7, secure: true, sameSite: "Strict" });
-      
+
       saveRememberMe(userEmail, input.password);// NEW
 
       if (rememberMe) {
@@ -281,10 +281,10 @@ const Login = () => {
         Cookies.set("token", response.data.token, { expires: 7, secure: true, sameSite: "Strict" });
         Cookies.set("name", response.data.user?.Fname || "", { expires: 7, secure: true, sameSite: "Strict" });
         Cookies.set("email", response.data.user?.email || pendingEmail, { expires: 7, secure: true, sameSite: "Strict" }); // NEW
-       
-        
 
-        saveRememberMe(input.email, input.password); 
+
+
+        saveRememberMe(input.email, input.password);
 
         toast.success("Logged in successfully! Previous session ended.");
         setShowDevicePrompt(false);
@@ -338,7 +338,7 @@ const Login = () => {
         Cookies.set("name", user.displayName, { expires: 7, secure: true, sameSite: "Strict" });
         Cookies.set("email", user.email, { expires: 7, secure: true, sameSite: "Strict" }); // NEW
 
-        saveRememberMe(input.email, input.password); 
+        saveRememberMe(input.email, input.password);
         toast.success("Login successful!");
         navigate("/dashboard");
       }
@@ -393,7 +393,7 @@ const Login = () => {
         Cookies.set("email", user.email, { expires: 7, secure: true, sameSite: "Strict" }); // NEW
         toast.success("Facebook login successful!");
 
-        saveRememberMe(input.email, input.password); 
+        saveRememberMe(input.email, input.password);
         navigate("/dashboard");
       }
     } catch (error) {
@@ -563,7 +563,7 @@ const Login = () => {
             Forgot Password?
           </p>
 
-            <p className="text-center my-3">Or</p>
+          <p className="text-center my-3">Or</p>
 
           {/* Social Login */}
           <button
@@ -628,10 +628,10 @@ const Login = () => {
                   value={otp[i] || ""}
                   id={`otp-${i}`}
                   className={`w-12 h-12 text-center border rounded-md text-xl transition focus:ring-2 focus:ring-blue-400 ${otp[i]
-                      ? isDigitValid
-                        ? "border-green-500"
-                        : "border-red-500"
-                      : "border-gray-300"
+                    ? isDigitValid
+                      ? "border-green-500"
+                      : "border-red-500"
+                    : "border-gray-300"
                     }`}
                   onChange={(e) => {
                     const val = e.target.value;
@@ -671,7 +671,7 @@ const Login = () => {
                     }
                     setOtp(newOtp.join(""));
 
-                    
+
                     const nextInput = document.getElementById(`otp-${pasteArray.length - 1}`);
                     nextInput && nextInput.focus();
                   }}
