@@ -113,7 +113,7 @@ const Login = () => {
   useEffect(() => {
     let interval;
     if (showOtpForm && timer > 0) {
-      interval = setInterval(() => setTimer((prev) => prev - 1), 8000);
+      interval = setInterval(() => setTimer((prev) => prev - 1), 1000);
     } else if (timer <= 0 && showOtpForm) {
       setCanResend(true);
       toast.error("OTP expired! Please resend.");
