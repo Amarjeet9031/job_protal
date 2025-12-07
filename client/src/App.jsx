@@ -56,15 +56,16 @@ function App() {
           <Route path="/contactus" element={<ContactUs />} />
           <Route path="/reset-password" element={<ForgetPassword />} />
           <Route path="/user/reset/:id/:token" element={<ChangePassword />} />
-          <Route path="/login" element={<Login />} />
+          {/* <Route path="/login" element={<Login />} /> */}
           <Route path="/register" element={<Register />} />
           <Route path="/session-expired" element={<SessionExpired />} />
           <Route path="/userFrom" element={<UserFrom/>} />
+          <Route path="/dashboard" element={<DashBoard />} />
         
 
           {/* 🟢 Correct Protected Route Wrapper */}
           <Route element={<ProtectedRoutes />}>
-            <Route path="/dashboard" element={<DashBoard />} />
+            {/* <Route path="/dashboard" element={<DashBoard />} /> */}
           </Route>
         </Routes>
         {/* <LiveChatBot/> */}
