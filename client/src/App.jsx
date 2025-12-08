@@ -27,6 +27,7 @@ import ProtectedRoutes from "./Services/ProtectedRoutes";
 
 import UserFrom from "./Components/UserFrom";
 import LiveChatBot from "./Components/LiveChatBot";
+import Register from "./Components/Register";
 
 // import Home from './components/Home';
 
@@ -56,6 +57,7 @@ function App() {
           <Route path="/reset-password" element={<ForgetPassword />} />
           <Route path="/user/reset/:id/:token" element={<ChangePassword />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register/>}/>
           <Route path="/session-expired" element={<SessionExpired />} />
           <Route path="/userFrom" element={<UserFrom/>} />
         
