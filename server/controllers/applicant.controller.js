@@ -58,6 +58,16 @@ export const createApplicant = async (req, res) => {
 
     const { name, phone, email, age, jobTitle } = req.body;
 
+    // -----------------------------
+    // Check if this email already applied
+    // -----------------------------
+    const existingApplicant = await Applicant.findOne({ email });
+    if (existingApplicant) {
+      return res.status(400).json({
+        message: `You have already applied for ${existingApplicant.jobTitle}. You are not eligible to apply for ${jobTitle}. Please wait for admin response.`,
+      });
+    }
+
     const applicant = new Applicant({
       name,
       phone,
@@ -73,23 +83,18 @@ export const createApplicant = async (req, res) => {
     // -----------------------------
     // Send Thank You Email to Applicant
     // -----------------------------
-   await sendApplicantThankYou(email, name, jobTitle);  // send email to applicant
-
-
-
-    // OR if you still want to send status email also:
-    // await sendStatusEmail(email, name, jobTitle, "Pending");
+    await sendApplicantThankYou(email, name, jobTitle);
 
     res.status(201).json({
       message: `Thank you for applying for ${jobTitle}! An email has been sent to ${email}`,
       applicant,
     });
-
   } catch (error) {
     console.error("Error creating applicant:", error);
     res.status(500).json({ message: "Server error", error });
   }
 };
+
 
 
 
