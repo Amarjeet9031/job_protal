@@ -404,10 +404,13 @@ static userLogin = async (req, res) => {
     await user.save();
 
     // -------------------- Send OTP via email --------------------
-    await sendOtpEmail(email, otp);
+// -------------------- Respond Immediately --------------------
+res.status(200).json({ otpSent: true, email: user.email });
 
-    // -------------------- Response --------------------
-    return res.status(200).json({ otpSent: true, email: user.email });
+// -------------------- Send OTP in Background --------------------
+sendOtpEmail(email, otp).catch((err) => {
+  console.error("OTP Email Sending Failed:", err.message);
+});
 
   } catch (error) {
     // -------------------- Error handling --------------------
