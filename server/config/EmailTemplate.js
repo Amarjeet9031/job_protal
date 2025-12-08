@@ -4,7 +4,7 @@
 //  You shall not disclose such confidential information and shall use it only in accordance
 //with the terms of the license agreement you entered into with [Rasa Consultancy Services].
 //  For more information, please contact: [Your Company Email/Legal Department Contact]
-import transporter from "./emailTransporter";
+import transporter from "./emailTransporter.js";
 /**
  * Function: sendEmailtoUser
  * Description: Sends a verification email to the user with the provided link.
