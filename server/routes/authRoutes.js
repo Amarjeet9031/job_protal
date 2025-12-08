@@ -8,7 +8,8 @@
 import express from "express";
 import { body, param } from "express-validator"; // For request body and param validation
 import AuthController from "../controllers/authController.js"; // All user authentication logic
-import checkIsUserAuthenticated from "../middlewares/authMiddleware.js"; // JWT authentication middleware
+import { checkIsUserAuthenticated } from "../middlewares/auth.js";
+// JWT authentication middleware
 
 const router = express.Router();
 

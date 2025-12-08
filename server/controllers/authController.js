@@ -562,14 +562,14 @@ static async sendLogoutEmail(req, res) {
     const transporter = nodemailer.createTransport({
       service: "gmail",                 // Using Gmail SMTP
       auth: {
-        user: process.env.EMAIL_USER,   // Email username from environment variables
+        user: process.env.EMAIL,   // Email username from environment variables
         pass: process.env.EMAIL_PASS,   // Email password/app-specific password
       },
     });
 
     // -------------------- Email content --------------------
     const mailOptions = {
-      from: process.env.EMAIL_USER,                               // Sender address
+      from: process.env.EMAIL,                               // Sender address
       to: email,                                                  // Recipient address
       subject: "Logout Successful",                                // Email subject line
       text: `Hello ${name || "User"},\nYour account has been logged out successfully.`, // Plain text body
