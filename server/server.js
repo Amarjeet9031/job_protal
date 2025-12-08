@@ -28,7 +28,7 @@ const _dirname = path.resolve();
 // ================================
 app.use(
   cors({
-    origin: ["https://job-protal-1-bwud.onrender.com"],
+    origin: ["https://job-protal-1-bwud.onrender.com","https://job-protal-fbct.onrender.com"],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
   })
@@ -56,8 +56,8 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "https://job-protal-1-bwud.onrender.com",
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    origin: ["https://job-protal-1-bwud.onrender.com","https://job-protal-fbct.onrender.com"],
+        methods: ["GET", "POST", "PUT", "DELETE"],
   },
 });
 
