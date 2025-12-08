@@ -90,7 +90,7 @@ app.use("/api/auth", authRoutes);
 app.use(express.static(path.join(_dirname, "/client/dist")));
 
 // Fallback route for React (Express v5 compatible)
-app.get(/.*/, (req, res) => {
+app.get('*', (req, res) => {
   res.sendFile(path.resolve(_dirname, "client", "dist", "index.html"));
 });
 

@@ -60,15 +60,15 @@ const Careers = () => {
 
   // 📦 Fetch jobs from backend
   const fetchJobs = async () => {
-    try {
-      const res = await axios.get("https://job-protal-fbct.onrender.com/api/jobs");
-      setJobs(res.data);
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching jobs:", error);
-      setLoading(false);
-    }
-  };
+  try {
+    const res = await axios.get("/jobs"); // correct
+    setJobs(res.data);
+    setLoading(false);
+  } catch (error) {
+    console.error("Error fetching jobs:", error);
+    setLoading(false);
+  }
+};
 
   // ✅ Connect socket and listen for updates
   useEffect(() => {
