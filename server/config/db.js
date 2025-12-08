@@ -16,9 +16,19 @@ async function connectDB() {
       process.exit(1);
     }
 
-    await mongoose.connect(mongoURI);
+    await mongoose.connect(mongoURI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
 
-    console.log("✅ MongoDB Connected Successfully");
+      // These are required when your connection string ends with ssl=true / tls=true
+      ssl: true,
+      tls: true,
+
+      // Only enable if your provider uses self-signed certificates
+      tlsAllowInvalidCertificates: true,
+    });
+
+    console.log("✅ MongoDB Connected Successfully (SSL/TLS Enabled)");
   } catch (error) {
     console.error("❌ MongoDB Connection Error:", error);
     process.exit(1);
