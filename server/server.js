@@ -10,7 +10,7 @@ import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import logger from "./logger.js";
 import morgan from "morgan";
-import adminRoutes from "./routes/admin.js";
+import adminRoutes from "./routes/admin.routes.js";
 import authRoutes from "./routes/authRoutes.js";
 import jobRoutes from "./routes/job.routes.js";
 import applicantRoutes from "./routes/applicant.routes.js";

@@ -9,6 +9,8 @@ import { config } from "dotenv";
 config();
 
 export const port = process.env.PORT || 9000;
-export const mongoURI =
-  process.env.MONGO_URI ||
-  "mongodb+srv://Amarjeet_223711:Hostel90311@cluster1.2thf3.mongodb.net/jobPortal?retryWrites=true w=majority&appName=Cluster1";
+export const mongoURI = process.env.MONGO_URI;
+ 
+
+ 
+ 

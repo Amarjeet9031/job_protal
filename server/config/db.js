@@ -12,23 +12,13 @@ async function connectDB() {
     const mongoURI = process.env.MONGO_URI;
 
     if (!mongoURI) {
-      console.error("❌ MONGO_URI is missing in environment variables");
+      console.error("❌ MONGO_URI is missing in Render environment variables");
       process.exit(1);
     }
 
-    await mongoose.connect(mongoURI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
+    await mongoose.connect(mongoURI);
 
-      // These are required when your connection string ends with ssl=true / tls=true
-      ssl: true,
-      tls: true,
-
-      // Only enable if your provider uses self-signed certificates
-      tlsAllowInvalidCertificates: true,
-    });
-
-    console.log("✅ MongoDB Connected Successfully (SSL/TLS Enabled)");
+    console.log("✅ MongoDB Connected Successfully");
   } catch (error) {
     console.error("❌ MongoDB Connection Error:", error);
     process.exit(1);
