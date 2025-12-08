@@ -39,7 +39,7 @@ const ForgetPassword = () => {
       const res = await axios.post(
         "/api/auth/forget-password",
         { email },
-        { timeout: 1000 } // Set a timeout in case server takes too long
+         // Set a timeout in case server takes too long
       );
 
       if (res.status === 200) {
