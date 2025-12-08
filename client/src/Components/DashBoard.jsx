@@ -84,32 +84,32 @@ const Dashboard = () => {
 
 
 
-// 📦 Fetch Jobs with validation
-// 📦 Fetch Jobs with validation for specific fields
-const fetchJobs = async () => {
-  try {
-    const res = await axios.get("https://job-protal-1-bwud.onrender.com/api/jobs");
-    const data = res.data;
+  // 📦 Fetch Jobs with validation
+  // 📦 Fetch Jobs with validation for specific fields
+  const fetchJobs = async () => {
+    try {
+      const res = await axios.get("https://job-protal-1-bwud.onrender.com/api/jobs");
+      const data = res.data;
 
-    // Define the fields you want to validate
-    const requiredFields = ["title", "description", "skills", "Opening",  "salary"];
+      // Define the fields you want to validate
+      const requiredFields = ["title", "description", "skills", "Opening", "salary"];
 
-    // Find jobs with any missing field
-    const invalidJobs = data.filter((job) =>
-      requiredFields.some((field) => !job[field] || job[field] === "")
-    );
+      // Find jobs with any missing field
+      const invalidJobs = data.filter((job) =>
+        requiredFields.some((field) => !job[field] || job[field] === "")
+      );
 
-    if (invalidJobs.length > 0) {
-      toast.error("Error: Some job entries have missing fields!");
-      console.warn("Jobs with missing fields detected:", invalidJobs);
-    } else {
-      setJobs(data); // Update state only if all rows are valid
+      if (invalidJobs.length > 0) {
+        toast.error("Error: Some job entries have missing fields!");
+        console.warn("Jobs with missing fields detected:", invalidJobs);
+      } else {
+        setJobs(data); // Update state only if all rows are valid
+      }
+    } catch (error) {
+      console.error("Error fetching jobs:", error);
+      toast.error("Failed to fetch jobs.");
     }
-  } catch (error) {
-    console.error("Error fetching jobs:", error);
-    toast.error("Failed to fetch jobs.");
-  }
-};
+  };
 
 
 
@@ -559,7 +559,7 @@ const ApplicantSection = ({
   totalPages,
   handleStatusChange,
   handleDeleteApplicant,
-   applicantsPerPage,  
+  applicantsPerPage,
   searchName,
   setSearchName,
   searchEmail,
@@ -673,7 +673,7 @@ const ApplicantSection = ({
                 <td className="border p-2">
                   {app.resumeUrl ? (
                     <a
-                      href={`https://job-protal-1-bwud.onrender.com/${app.resumeUrl}`}
+                      href={`https://job-protal-1-bwud.onrender.com/${app.resumeUrl.replace(/^\/+/, "")}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-blue-600 hover:underline"

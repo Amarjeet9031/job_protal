@@ -110,12 +110,3 @@ const start = async () => {
 start();
 
 
-
-
-// app.get("/", (req, res) => {
-//   res.send("Job Portal Backend API is running 👍");
-// });
-
-// app.get("/*", (req, res) => {
-//   res.sendFile(path.resolve(_dirname, "client", "dist", "index.html"));
-// });
