@@ -29,7 +29,12 @@ const _dirname = path.resolve();
 // ================================
 // MIDDLEWARE
 // ================================
-app.use(cors());
+app.use(cors({
+  origin:["https://job-protal-1-bwud.onrender.com"],
+  credentials:true,
+}
+
+));
 app.use(express.json());
 app.use(morgan("dev"));
 app.use("/uploads", express.static("uploads"));
