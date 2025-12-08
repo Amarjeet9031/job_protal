@@ -13,6 +13,7 @@ import CareersForm from "./CareersForm";
 import { io } from "socket.io-client";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import API from "../Services/api.jsx";
 
 // ✅ Create socket connection outside the component (global)
 const socket = io("https://job-protal-fbct.onrender.com/", {
@@ -61,7 +62,7 @@ const Careers = () => {
   // 📦 Fetch jobs from backend
   const fetchJobs = async () => {
   try {
-    const res = await axios.get("/jobs"); // correct
+    const res = await API.get("/api/jobs"); // public endpoint
     setJobs(res.data);
     setLoading(false);
   } catch (error) {
