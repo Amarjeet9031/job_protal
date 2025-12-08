@@ -2,6 +2,7 @@
 //  Copyright (c) [2025] [Rasa Consultancy Services]. All rights
 //  reserved. This software is confidential and proprietary.
 // ============================================================
+
 import express from "express";
 import cors from "cors";
 import http from "http";
@@ -15,54 +16,59 @@ import jobRoutes from "./routes/job.routes.js";
 import applicantRoutes from "./routes/applicant.routes.js";
 import path from "path";
 
+// Socket.io logic
 import { setSocket } from "./controllers/job.controller.js";
 import { Server } from "socket.io";
 
-dotenv.config();
+dotenv.config(); // Load .env
+
 const app = express();
 const PORT = process.env.PORT || 9000;
+
 const _dirname = path.resolve();
-
-// ================================
-// CORS
-// ================================
-app.use(
-  cors({
-    origin: ["https://job-protal-1-bwud.onrender.com","https://job-protal-fbct.onrender.com"],
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-  })
-);
-
 // ================================
 // MIDDLEWARE
 // ================================
+app.use(cors({
+  origin:["https://job-protal-1-bwud.onrender.com"],
+  credentials:true,
+  methods: ["GET", "POST", "PUT", "DELETE"]
+}
+
+));
 app.use(express.json());
 app.use(morgan("dev"));
 app.use("/uploads", express.static("uploads"));
-
-// ================================
-// API ROUTES (MUST COME BEFORE STATIC)
-// ================================
 app.use("/api/admin", adminRoutes);
-app.use("/api/jobs", jobRoutes);
-app.use("/api/applicants", applicantRoutes);
-app.use("/api/auth", authRoutes);
+
+app.use(express.static(path.join(_dirname, "/client/dist")));
+
+// Default test route — fixes Render 404 spam
+
 
 // ================================
-// SOCKET.IO
+// CREATE HTTP SERVER
 // ================================
 const server = http.createServer(app);
 
+// ================================
+// SOCKET.IO CONFIG
+// ================================
 const io = new Server(server, {
   cors: {
-    origin: ["https://job-protal-1-bwud.onrender.com","https://job-protal-fbct.onrender.com"],
-        methods: ["GET", "POST", "PUT", "DELETE"],
+    origin:  "https://job-protal-1-bwud.onrender.com",
+    methods: ["GET", "POST", "PUT", "DELETE"],
   },
 });
 
+
+
+
+
+// Pass io instance to controller
 setSocket(io);
 
+// Socket events
 io.on("connection", (socket) => {
   logger.info(`🟢 Client connected: ${socket.id}`);
 
@@ -72,25 +78,32 @@ io.on("connection", (socket) => {
 });
 
 // ================================
-// STATIC FILES (ONLY ONCE, AT BOTTOM)
+// API ROUTES
 // ================================
-app.use(express.static(path.join(_dirname, "client", "dist")));
-
-app.get("*", (req, res) => {
-  res.sendFile(path.join(_dirname, "client", "dist", "index.html"));
-});
+app.use("/api/jobs", jobRoutes);
+app.use("/api/applicants", applicantRoutes);
+app.use("/api/auth", authRoutes);
 
 // ================================
 // START SERVER
 // ================================
+app.use(express.static(path.join(_dirname, "/client/dist")));
+
+// Fallback route for React (Express v5 compatible)
+app.get(/.*/, (req, res) => {
+  res.sendFile(path.resolve(_dirname, "client", "dist", "index.html"));
+});
+
 const start = async () => {
   try {
+    logger.info("Starting server...");
     await connectDB();
-    server.listen(PORT, () =>
-      logger.info(`🚀 Server running on port ${PORT}`)
-    );
+
+    server.listen(PORT, () => {
+      logger.info(`🚀 Server running on port ${PORT}`);
+    });
   } catch (error) {
-    logger.error("❌ Server failed: " + error.message);
+    logger.error("❌ Server failed to start: " + error.message);
   }
 };
 
