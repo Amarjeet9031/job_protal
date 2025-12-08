@@ -159,7 +159,7 @@ const Login = () => {
 
     try {
       const response = await axios.post("/api/auth/users/login", input, {
-        timeout: 30000,
+        timeout: 60000,
       });
 
       if (response.data.otpSent) {
