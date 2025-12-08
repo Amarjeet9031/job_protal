@@ -16,7 +16,6 @@ import ServiceDetail from "./Components/ServiceDetail";
 import Home from "./Components/Home";
 import ContactUs from "./Components/ContactUs";
 import Login from "./Components/Login";
-import Register from "./Components/Register";
 import ChangePassword from "./Pages/ChangePassword";
 import DashBoard from "./Components/DashBoard";
 import SessionExpired from "./Pages/SessionExpired";
@@ -57,7 +56,6 @@ function App() {
           <Route path="/reset-password" element={<ForgetPassword />} />
           <Route path="/user/reset/:id/:token" element={<ChangePassword />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
           <Route path="/session-expired" element={<SessionExpired />} />
           <Route path="/userFrom" element={<UserFrom/>} />
         

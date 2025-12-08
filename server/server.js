@@ -10,7 +10,7 @@ import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import logger from "./logger.js";
 import morgan from "morgan";
-import adminRoutes from "./routes/adminRoutes.js";
+import adminRoutes from "./routes/admin.js";
 import authRoutes from "./routes/authRoutes.js";
 import jobRoutes from "./routes/job.routes.js";
 import applicantRoutes from "./routes/applicant.routes.js";
@@ -50,7 +50,7 @@ const server = http.createServer(app);
 // ================================
 const io = new Server(server, {
   cors: {
-    origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    origin: process.env.FRONTEND_URL || "https://job-protal-1-bwud.onrender.com",
     methods: ["GET", "POST", "PUT", "DELETE"],
   },
 });
