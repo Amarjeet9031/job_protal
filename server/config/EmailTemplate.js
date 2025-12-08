@@ -10,29 +10,41 @@ import transporter from "./emailTransporter.js";
  * Description: Sends a verification email to the user with the provided link.
  */
 // Verification Email
-export const sendEmailtoUser = async (link, email) => {
+
+
+/**
+ * Send Verification / OTP Email
+ */
+export const sendEmailtoUser = async (email, linkOrOTP, type = "link") => {
   try {
-    const mailOptions = {
+    let html, subject;
+    if (type === "link") {
+      subject = "Verify Your Email";
+      html = `<p>Please click the link below to verify your email:</p>
+              <a href="${linkOrOTP}">${linkOrOTP}</a>`;
+    } else {
+      subject = "Your OTP Code";
+      html = `<p>Your OTP code is: <strong>${linkOrOTP}</strong></p>`;
+    }
+
+    const info = await transporter.sendMail({
       from: process.env.EMAIL,
       to: email,
-      subject: "Verify Your Email",
-      html: `<a href="${link}">Verify Email</a>`,
-    };
+      subject,
+      html,
+    });
 
-    const info = await transporter.sendMail(mailOptions);
-    console.log("✅ Verification Email sent:", info.response);
+    console.log("✅ Verification/OTP Email sent:", info.response);
     return { success: true };
   } catch (err) {
-    console.error("❌ Email sending failed:", err);
+    console.error("❌ Verification/OTP Email Error:", err.message);
     return { success: false, error: err.message };
   }
 };
 
 /**
- * Function: sendStatusEmail
- * Description: Sends job application status email (Shortlisted / Rejected)
+ * Send Job Application Status Email (Shortlisted / Rejected)
  */
-// Status Email
 export const sendStatusEmail = async (email, name, jobTitle, status) => {
   try {
     let subject, html;
@@ -50,33 +62,31 @@ export const sendStatusEmail = async (email, name, jobTitle, status) => {
       subject,
       html,
     });
+
     console.log("📩 Status Email sent:", info.response);
     return { success: true };
   } catch (err) {
-    console.error("❌ Status Email Error:", err);
+    console.error("❌ Status Email Error:", err.message);
     return { success: false, error: err.message };
   }
 };
 
 /**
- * Function: sendApplicantThankYou
- * Description: Sends a thank-you email to the applicant after applying
+ * Send Thank-you Email to Applicant
  */
-// Applicant Thank You
 export const sendApplicantThankYou = async (email, name, jobTitle) => {
   try {
-    const mailOptions = {
+    const info = await transporter.sendMail({
       from: process.env.EMAIL,
       to: email,
       subject: `Thank you for applying for ${jobTitle}`,
       html: `<p>Hello ${name},<br/>Thank you for applying for <strong>${jobTitle}</strong>.</p>`,
-    };
+    });
 
-    const info = await transporter.sendMail(mailOptions);
-    console.log("📩 Applicant Email sent:", info.response);
+    console.log("📩 Applicant Thank-you Email sent:", info.response);
     return { success: true };
   } catch (err) {
-    console.error("❌ Applicant Email Error:", err);
+    console.error("❌ Applicant Email Error:", err.message);
     return { success: false, error: err.message };
   }
 };
