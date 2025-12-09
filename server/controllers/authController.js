@@ -18,8 +18,8 @@ import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 // Import custom function to send emails to users
-// import { sendEmailtoUser } from "../config/EmailTemplate.js";
-import { sendEmailtoUser } from "../config/emailTransporter.js";
+
+import { sendEmailtoUser } from "../config/EmailTemplate.js";
 
 const OAuth2 = google.auth.OAuth2;
 
