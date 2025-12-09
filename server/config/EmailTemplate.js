@@ -25,7 +25,7 @@ export const sendEmailtoUser = async (email, linkOrOTP, type = "link") => {
 
     const info = await transporter.sendMail({
       from: process.env.OAUTH_USER_EMAIL,  
-      to: email,
+      to: "amarjeet_223711@saitm.org",
       subject,
       html,
     });
