@@ -12,13 +12,19 @@ const oauth2Client = new OAuth2(
 oauth2Client.setCredentials({
   refresh_token: process.env.OAUTH_REFRESH_TOKEN,
 });
-
 export const createTransporter = async () => {
   try {
+    console.log("🔍 Getting Access Token...");
     const accessTokenResponse = await oauth2Client.getAccessToken();
+
+    console.log("accessToken response:", accessTokenResponse);
+
     const accessToken = accessTokenResponse?.token || accessTokenResponse;
 
-    if (!accessToken) throw new Error("Failed to get access token");
+    if (!accessToken) {
+      console.log("❌ ACCESS TOKEN NOT GENERATED");
+      throw new Error("No access token received");
+    }
 
     const transporter = nodemailer.createTransport({
       service: "gmail",
@@ -33,10 +39,10 @@ export const createTransporter = async () => {
     });
 
     await transporter.verify();
-    console.log("✅ OAuth2 Transporter verified successfully");
+    console.log("✅ Transporter verified");
     return transporter;
   } catch (err) {
-    console.error("❌ Email Transporter Error:", err);
+    console.error("❌ Transporter Error:", err);
     throw err;
   }
 };
