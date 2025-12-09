@@ -1,6 +1,3 @@
-// server/config/emailTransporter.js
-// server/config/emailTransporter.js
-// server/config/emailTransporter.js
 import nodemailer from "nodemailer";
 import { google } from "googleapis";
 
@@ -19,23 +16,35 @@ oauth2Client.setCredentials({
 
 async function createTransporter() {
   try {
-    const accessToken = await oauth2Client.getAccessToken();
+    // Get a fresh access token
+    const accessTokenResponse = await oauth2Client.getAccessToken();
+    const accessToken = accessTokenResponse?.token || accessTokenResponse;
+
+    if (!accessToken) {
+      throw new Error("Failed to retrieve access token for Gmail OAuth2");
+    }
 
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "smtp.gmail.com",   // Explicit SMTP host
+      port: 465,                // SSL port
+      secure: true,             // Use SSL
       auth: {
         type: "OAuth2",
-        user: process.env.OAUTH_USER_EMAIL,
+        user: process.env.OAUTH_USER_EMAIL, // Must match Gmail used to generate refresh token
         clientId: process.env.OAUTH_CLIENT_ID,
         clientSecret: process.env.OAUTH_CLIENT_SECRET,
         refreshToken: process.env.OAUTH_REFRESH_TOKEN,
-        accessToken: accessToken?.token,
+        accessToken: accessToken,
       },
     });
 
+    // Verify transporter connection
+    await transporter.verify();
+    console.log("✅ Transporter verified successfully");
     return transporter;
   } catch (error) {
-    console.log("❌ OAuth Error:", error);
+    console.error("❌ Email Transporter Error:", error);
+    throw error; // Ensure calling function knows transport failed
   }
 }
 

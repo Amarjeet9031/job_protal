@@ -24,7 +24,7 @@ export const sendEmailtoUser = async (email, linkOrOTP, type = "link") => {
     }
 
     const info = await transporter.sendMail({
-      from: process.env.EMAIL,  
+      from: process.env.OAUTH_USER_EMAIL,  
       to: email,
       subject,
       html,
@@ -57,7 +57,7 @@ export const sendStatusEmail = async (email, name, jobTitle, status) => {
     }
 
     const info = await transporter.sendMail({
-      from: process.env.EMAIL,
+      from: process.env.OAUTH_USER_EMAIL,
       to: email,
       subject,
       html,
@@ -80,7 +80,7 @@ export const sendApplicantThankYou = async (email, name, jobTitle) => {
     const transporter = await createTransporter();  // <-- FIX
 
     const info = await transporter.sendMail({
-      from: process.env.EMAIL,
+      from: process.env.OAUTH_USER_EMAIL,
       to: email,
       subject: `Thank you for applying for ${jobTitle}`,
       html: `
