@@ -1,21 +1,42 @@
 // server/config/emailTransporter.js
+// server/config/emailTransporter.js
+// server/config/emailTransporter.js
 import nodemailer from "nodemailer";
+import { google } from "googleapis";
 
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  host: "smtp.gmail.com",
-  port: 465,
-  secure:true,
-  auth: {
-    user: process.env.EMAIL,           // Set in Render environment variables
-    pass: process.env.EMAIL_PASSWORD,  // Gmail App Password
-  },
+const OAuth2 = google.auth.OAuth2;
+
+// OAuth2 Client
+const oauth2Client = new OAuth2(
+  process.env.OAUTH_CLIENT_ID,
+  process.env.OAUTH_CLIENT_SECRET,
+  process.env.OAUTH_REDIRECT_URI
+);
+
+oauth2Client.setCredentials({
+  refresh_token: process.env.OAUTH_REFRESH_TOKEN,
 });
 
-// Verify transporter on startup
-transporter.verify((err, success) => {
-  if (err) console.error("❌ Email Transporter Error:", err);
-  else console.log("✅ Email Transporter Ready");
-});
+async function createTransporter() {
+  try {
+    const accessToken = await oauth2Client.getAccessToken();
 
-export default transporter;
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        type: "OAuth2",
+        user: process.env.EMAIL,
+        clientId: process.env.OAUTH_CLIENT_ID,
+        clientSecret: process.env.OAUTH_CLIENT_SECRET,
+        refreshToken: process.env.OAUTH_REFRESH_TOKEN,
+        accessToken: accessToken?.token,
+      },
+    });
+
+    return transporter;
+  } catch (error) {
+    console.log("❌ OAuth Error:", error);
+  }
+}
+
+export default createTransporter;

@@ -4,31 +4,27 @@
 //  You shall not disclose such confidential information and shall use it only in accordance
 //with the terms of the license agreement you entered into with [Rasa Consultancy Services].
 //  For more information, please contact: [Your Company Email/Legal Department Contact]
-import transporter from "./emailTransporter.js";
-/**
- * Function: sendEmailtoUser
- * Description: Sends a verification email to the user with the provided link.
- */
-// Verification Email
+import createTransporter from "./emailTransporter.js";
 
-
-/**
- * Send Verification / OTP Email
- */
 export const sendEmailtoUser = async (email, linkOrOTP, type = "link") => {
   try {
+    const transporter = await createTransporter();  // <-- FIX
+
     let html, subject;
+
     if (type === "link") {
       subject = "Verify Your Email";
-      html = `<p>Please click the link below to verify your email:</p>
-              <a href="${linkOrOTP}">${linkOrOTP}</a>`;
+      html = `
+        <p>Please click the link below to verify your email:</p>
+        <a href="${linkOrOTP}">${linkOrOTP}</a>
+      `;
     } else {
       subject = "Your OTP Code";
       html = `<p>Your OTP code is: <strong>${linkOrOTP}</strong></p>`;
     }
 
     const info = await transporter.sendMail({
-      from: process.env.EMAIL,
+      from: process.env.EMAIL,  
       to: email,
       subject,
       html,
@@ -42,18 +38,22 @@ export const sendEmailtoUser = async (email, linkOrOTP, type = "link") => {
   }
 };
 
+
 /**
  * Send Job Application Status Email (Shortlisted / Rejected)
  */
 export const sendStatusEmail = async (email, name, jobTitle, status) => {
   try {
+    const transporter = await createTransporter();  // <-- FIX
+
     let subject, html;
+
     if (status === "Shortlisted") {
       subject = `Congratulations! You are shortlisted for ${jobTitle}`;
-      html = `<p>Hello ${name},<br/>You are shortlisted for <strong>${jobTitle}</strong>.</p>`;
+      html = `<p>Hello ${name},</p><p>You are shortlisted for <strong>${jobTitle}</strong>.</p>`;
     } else {
       subject = `Update on your ${jobTitle} application`;
-      html = `<p>Hello ${name},<br/>Unfortunately, you were not selected for <strong>${jobTitle}</strong>.</p>`;
+      html = `<p>Hello ${name},</p><p>Unfortunately, you were not selected for <strong>${jobTitle}</strong>.</p>`;
     }
 
     const info = await transporter.sendMail({
@@ -71,16 +71,22 @@ export const sendStatusEmail = async (email, name, jobTitle, status) => {
   }
 };
 
+
 /**
  * Send Thank-you Email to Applicant
  */
 export const sendApplicantThankYou = async (email, name, jobTitle) => {
   try {
+    const transporter = await createTransporter();  // <-- FIX
+
     const info = await transporter.sendMail({
       from: process.env.EMAIL,
       to: email,
       subject: `Thank you for applying for ${jobTitle}`,
-      html: `<p>Hello ${name},<br/>Thank you for applying for <strong>${jobTitle}</strong>.</p>`,
+      html: `
+        <p>Hello ${name},</p>
+        <p>Thank you for applying for <strong>${jobTitle}</strong>.</p>
+      `,
     });
 
     console.log("📩 Applicant Thank-you Email sent:", info.response);
@@ -90,3 +96,4 @@ export const sendApplicantThankYou = async (email, name, jobTitle) => {
     return { success: false, error: err.message };
   }
 };
+
