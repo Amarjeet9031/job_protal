@@ -1,17 +1,17 @@
 import nodemailer from "nodemailer";
 import { google } from "googleapis";
 
-const OAuth2 = google.auth.OAuth2;
-
-const oauth2Client = new OAuth2(
+const oAuth2Client = new google.auth.OAuth2(
   process.env.OAUTH_CLIENT_ID,
   process.env.OAUTH_CLIENT_SECRET,
   process.env.OAUTH_REDIRECT_URI
 );
 
-oauth2Client.setCredentials({
+// Set Refresh Token
+oAuth2Client.setCredentials({
   refresh_token: process.env.OAUTH_REFRESH_TOKEN,
 });
+
 export const createTransporter = async () => {
   try {
     console.log("🔍 Creating OAuth2 Transporter...");
@@ -20,9 +20,16 @@ export const createTransporter = async () => {
     console.log("REFRESH_TOKEN:", process.env.OAUTH_REFRESH_TOKEN ? "Loaded" : "Missing");
     console.log("USER_EMAIL:", process.env.OAUTH_USER_EMAIL);
 
-    const accessToken = await oAuth2Client.getAccessToken();
+    // Get Access Token
+    const accessTokenObj = await oAuth2Client.getAccessToken();
+    const accessToken =
+      typeof accessTokenObj === "string"
+        ? accessTokenObj
+        : accessTokenObj?.token;
+
     console.log("🔑 Access Token:", accessToken);
 
+    // Create Transporter
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -31,7 +38,7 @@ export const createTransporter = async () => {
         clientId: process.env.OAUTH_CLIENT_ID,
         clientSecret: process.env.OAUTH_CLIENT_SECRET,
         refreshToken: process.env.OAUTH_REFRESH_TOKEN,
-        accessToken: accessToken.token,
+        accessToken,
       },
     });
 
