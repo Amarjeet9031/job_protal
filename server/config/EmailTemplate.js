@@ -3,8 +3,6 @@ import { resend, FROM_EMAIL } from "../config/emailTransporter.js";
 // ==============================
 // 1. Send Verification or OTP Email
 // ==============================
-
-
 export const sendEmailtoUser = async (link, email) => {
   try {
     const response = await resend.emails.send({
@@ -14,14 +12,13 @@ export const sendEmailtoUser = async (link, email) => {
       html: `<h2>Verify Your Email</h2><p>Click <a href="${link}">here</a> to verify.</p>`,
     });
 
-    console.log("✅ Email sent:", response);
-    return { success: true };
+    console.log("✅ Verification/OTP Email sent:", response?.id);
+    return { success: true, emailInfo: response }; // <-- include response
   } catch (err) {
     console.error("❌ Email sending error:", err.message);
     return { success: false, error: err.message };
   }
 };
-
 
 // ==============================
 // 2. Send Job Application Status Email
@@ -35,15 +32,8 @@ export const sendStatusEmail = async (email, name, jobTitle, status) => {
 
     const html =
       status === "Shortlisted"
-        ? `
-        <h2>Hello ${name}</h2>
-        <p>🎉 Congratulations! You are shortlisted for <strong>${jobTitle}</strong>.</p>
-      `
-        : `
-        <h2>Hello ${name}</h2>
-        <p>We appreciate your interest in <strong>${jobTitle}</strong>.</p>
-        <p>Unfortunately, you were not selected.</p>
-      `;
+        ? `<h2>Hello ${name}</h2><p>🎉 Congratulations! You are shortlisted for <strong>${jobTitle}</strong>.</p>`
+        : `<h2>Hello ${name}</h2><p>We appreciate your interest in <strong>${jobTitle}</strong>.</p><p>Unfortunately, you were not selected.</p>`;
 
     const response = await resend.emails.send({
       from: FROM_EMAIL,
@@ -53,7 +43,7 @@ export const sendStatusEmail = async (email, name, jobTitle, status) => {
     });
 
     console.log("📩 Status Email sent:", response?.id);
-    return { success: true };
+    return { success: true, emailInfo: response }; // <-- include response
   } catch (err) {
     console.error("❌ Status Email Error:", err.message);
     return { success: false, error: err.message };
@@ -81,7 +71,7 @@ export const sendApplicantThankYou = async (email, name, jobTitle) => {
     });
 
     console.log("📩 Applicant Thank-You Email sent:", response?.id);
-    return { success: true };
+    return { success: true, emailInfo: response }; // <-- include response
   } catch (err) {
     console.error("❌ Applicant Email Error:", err.message);
     return { success: false, error: err.message };
