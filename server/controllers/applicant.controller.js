@@ -6,8 +6,9 @@
 //  For more information, please contact: [Your Company Email/Legal Department Contact]
 
 import Applicant from "../models/applicant.model.js";
-// import { sendStatusEmail,sendApplicantThankYou } from "../config/EmailTemplate.js";
-import { sendApplicantThankYou,sendStatusEmail } from "../utils/sendMail.js";
+
+ import { sendApplicantThankYou,sendStatusEmail } from "../config/EmailTemplate.js";
+
 // import {  } from "../config/EmailTemplate.js";
 import path from "path";
 import fs from "fs";

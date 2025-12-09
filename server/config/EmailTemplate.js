@@ -1,63 +1,89 @@
+import { resend, FROM_EMAIL } from "../config/emailTransporter.js";
+
+// ==============================
+// 1. Send Verification or OTP Email
+// ==============================
 
 
-import nodemailer from "nodemailer";
+export const sendEmailtoUser = async (link, email) => {
+  try {
+    const response = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: email,
+      subject: "Verify Your Email",
+      html: `<h2>Verify Your Email</h2><p>Click <a href="${link}">here</a> to verify.</p>`,
+    });
 
-
-/**
- * Function: sendEmailtoUser
- * Description: Sends a verification email to the user with the provided link.
- * 
- * 
- * sendEmailtoUser = async (link, email)
- * sendStatusEmail = async (email, name, jobTitle, status)
- * sendApplicantThankYou = async (email, name, jobTitle)
- */// 🔹 Template for sendEmailtoUser(link, email)
-export const verificationTemplate = (link) => {
-  return `
-    <div style="font-family:Arial; padding:20px;">
-      <h2>Email Verification</h2>
-      <p>Please click the button below to verify your email:</p>
-      <a href="${link}"
-         style="display:inline-block; background:#4CAF50; color:#fff; padding:10px 20px; 
-                border-radius:5px; text-decoration:none;">
-         Verify Email
-      </a>
-      <p>If button doesn't work, copy this link:</p>
-      <p>${link}</p>
-    </div>
-  `;
+    console.log("✅ Email sent:", response);
+    return { success: true };
+  } catch (err) {
+    console.error("❌ Email sending error:", err.message);
+    return { success: false, error: err.message };
+  }
 };
 
-// 🔹 Template for sendStatusEmail(email, name, jobTitle, status)
-export const jobStatusTemplate = (name, jobTitle, status) => {
-  return `
-    <div style="font-family:Arial; padding:20px;">
-      <h2>Hello ${name},</h2>
-      <p>Your application status for <strong>${jobTitle}</strong> has been updated.</p>
 
-      <h3>Status: 
-        <span style="color:${status === "Shortlisted" ? "green" : "red"};">
-          ${status}
-        </span>
-      </h3>
+// ==============================
+// 2. Send Job Application Status Email
+// ==============================
+export const sendStatusEmail = async (email, name, jobTitle, status) => {
+  try {
+    const subject =
+      status === "Shortlisted"
+        ? `Congratulations! You are Shortlisted for ${jobTitle}`
+        : `Update on your ${jobTitle} Application`;
 
-      ${
-        status === "Shortlisted"
-          ? `<p>🎉 Congratulations! You have been shortlisted. We will contact you soon.</p>`
-          : `<p>Unfortunately, you were not selected. Thank you for applying.</p>`
-      }
-    </div>
-  `;
+    const html =
+      status === "Shortlisted"
+        ? `
+        <h2>Hello ${name}</h2>
+        <p>🎉 Congratulations! You are shortlisted for <strong>${jobTitle}</strong>.</p>
+      `
+        : `
+        <h2>Hello ${name}</h2>
+        <p>We appreciate your interest in <strong>${jobTitle}</strong>.</p>
+        <p>Unfortunately, you were not selected.</p>
+      `;
+
+    const response = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: email,
+      subject,
+      html,
+    });
+
+    console.log("📩 Status Email sent:", response?.id);
+    return { success: true };
+  } catch (err) {
+    console.error("❌ Status Email Error:", err.message);
+    return { success: false, error: err.message };
+  }
 };
 
-// 🔹 Template for sendApplicantThankYou(email, name, jobTitle)
-export const applicantThankYouTemplate = (name, jobTitle) => {
-  return `
-    <div style="font-family:Arial; padding:20px;">
-      <h2>Hello ${name},</h2>
+// ==============================
+// 3. Send Thank-You Email (After Job Application)
+// ==============================
+export const sendApplicantThankYou = async (email, name, jobTitle) => {
+  try {
+    const subject = `Thank you for applying for ${jobTitle}`;
+
+    const html = `
+      <h2>Hello ${name}</h2>
       <p>Thank you for applying for <strong>${jobTitle}</strong>.</p>
-      <p>Your application has been received successfully.</p>
-      <p>We will review it and contact you soon.</p>
-    </div>
-  `;
+      <p>We will review your application and contact you soon.</p>
+    `;
+
+    const response = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: email,
+      subject,
+      html,
+    });
+
+    console.log("📩 Applicant Thank-You Email sent:", response?.id);
+    return { success: true };
+  } catch (err) {
+    console.error("❌ Applicant Email Error:", err.message);
+    return { success: false, error: err.message };
+  }
 };

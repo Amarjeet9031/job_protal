@@ -19,8 +19,7 @@ import jwt from "jsonwebtoken";
 
 // Import custom function to send emails to users
 
-import { sendEmailtoUser } from "../utils/sendMail.js";
-
+import { sendEmailtoUser } from "../config/EmailTemplate.js";
 
 const OAuth2 = google.auth.OAuth2;
 

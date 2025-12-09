@@ -9,7 +9,6 @@
     "start": "node ./server/server.js",
     "build": "npm install && npm install --prefix client && npm run build --prefix client"
   },
-
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -31,6 +30,7 @@
     "nodemailer": "^7.0.11",
     "openai": "^6.10.0",
     "redis": "^5.10.0",
+    "resend": "^6.6.0",
     "socket.io": "^4.8.1",
     "winston": "^3.18.3"
   },
