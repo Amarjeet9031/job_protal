@@ -25,7 +25,7 @@ async function createTransporter() {
       service: "gmail",
       auth: {
         type: "OAuth2",
-        user: process.env.EMAIL,
+        user: process.env.OAUTH_USER_EMAIL,
         clientId: process.env.OAUTH_CLIENT_ID,
         clientSecret: process.env.OAUTH_CLIENT_SECRET,
         refreshToken: process.env.OAUTH_REFRESH_TOKEN,
