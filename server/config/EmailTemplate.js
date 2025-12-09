@@ -1,77 +1,63 @@
-import { createTransporter } from "../config/emailTransporter.js";
 
-// Send verification / OTP email
-export const sendEmailtoUser = async (linkOrOTP, email, type = "link") => {
-  try {
-    const transporter = await createTransporter();
-    const subject = type === "link" ? "Verify Your Email" : "Your OTP Code";
-    const html =
-      type === "link"
-        ? `<h2>Verify Your Email</h2><p>Please click the link below:</p><a href="${linkOrOTP}">Verify Email</a>`
-        : `<h2>Your OTP Code</h2><p><strong>${linkOrOTP}</strong></p>`;
 
-    const info = await transporter.sendMail({
-      from: process.env.OAUTH_USER_EMAIL,
-      to: email,
-      subject,
-      html,
-    });
+import nodemailer from "nodemailer";
 
-    console.log("✅ Verification/OTP Email sent:", info.response);
-    return { success: true };
-  } catch (err) {
-    console.error("❌ Verification/OTP Email Error:", err.message);
-    return { success: false, error: err.message };
-  }
+
+/**
+ * Function: sendEmailtoUser
+ * Description: Sends a verification email to the user with the provided link.
+ * 
+ * 
+ * sendEmailtoUser = async (link, email)
+ * sendStatusEmail = async (email, name, jobTitle, status)
+ * sendApplicantThankYou = async (email, name, jobTitle)
+ */// 🔹 Template for sendEmailtoUser(link, email)
+export const verificationTemplate = (link) => {
+  return `
+    <div style="font-family:Arial; padding:20px;">
+      <h2>Email Verification</h2>
+      <p>Please click the button below to verify your email:</p>
+      <a href="${link}"
+         style="display:inline-block; background:#4CAF50; color:#fff; padding:10px 20px; 
+                border-radius:5px; text-decoration:none;">
+         Verify Email
+      </a>
+      <p>If button doesn't work, copy this link:</p>
+      <p>${link}</p>
+    </div>
+  `;
 };
 
-// Send job application status email
-export const sendStatusEmail = async (email, name, jobTitle, status) => {
-  try {
-    const transporter = await createTransporter();
-    const subject =
-      status === "Shortlisted"
-        ? `Congratulations! You are Shortlisted for ${jobTitle}`
-        : `Update on your ${jobTitle} Application`;
+// 🔹 Template for sendStatusEmail(email, name, jobTitle, status)
+export const jobStatusTemplate = (name, jobTitle, status) => {
+  return `
+    <div style="font-family:Arial; padding:20px;">
+      <h2>Hello ${name},</h2>
+      <p>Your application status for <strong>${jobTitle}</strong> has been updated.</p>
 
-    const html =
-      status === "Shortlisted"
-        ? `<h2>Hello ${name}</h2><p>🎉 Congratulations! You are shortlisted for <strong>${jobTitle}</strong>.</p>`
-        : `<h2>Hello ${name}</h2><p>Unfortunately, your application was <strong>not selected</strong> for <strong>${jobTitle}</strong>.</p>`;
+      <h3>Status: 
+        <span style="color:${status === "Shortlisted" ? "green" : "red"};">
+          ${status}
+        </span>
+      </h3>
 
-    const info = await transporter.sendMail({
-      from: process.env.OAUTH_USER_EMAIL,
-      to: email,
-      subject,
-      html,
-    });
-
-    console.log("📩 Status Email sent:", info.response);
-    return { success: true };
-  } catch (err) {
-    console.error("❌ Status Email Error:", err.message);
-    return { success: false, error: err.message };
-  }
+      ${
+        status === "Shortlisted"
+          ? `<p>🎉 Congratulations! You have been shortlisted. We will contact you soon.</p>`
+          : `<p>Unfortunately, you were not selected. Thank you for applying.</p>`
+      }
+    </div>
+  `;
 };
 
-// Send applicant thank-you email
-export const sendApplicantThankYou = async (email, name, jobTitle) => {
-  try {
-    const transporter = await createTransporter();
-    const subject = `Thank you for applying for ${jobTitle}`;
-    const html = `<h2>Hello ${name}</h2><p>Thank you for applying for <strong>${jobTitle}</strong>.</p><p>We will contact you soon.</p>`;
-
-    const info = await transporter.sendMail({
-      from: process.env.OAUTH_USER_EMAIL,
-      to: email,
-      subject,
-      html,
-    });
-
-    console.log("📩 Applicant Thank-You Email sent:", info.response);
-    return { success: true };
-  } catch (err) {
-    console.error("❌ Applicant Email Error:", err.message);
-    return { success: false, error: err.message };
-  }
+// 🔹 Template for sendApplicantThankYou(email, name, jobTitle)
+export const applicantThankYouTemplate = (name, jobTitle) => {
+  return `
+    <div style="font-family:Arial; padding:20px;">
+      <h2>Hello ${name},</h2>
+      <p>Thank you for applying for <strong>${jobTitle}</strong>.</p>
+      <p>Your application has been received successfully.</p>
+      <p>We will review it and contact you soon.</p>
+    </div>
+  `;
 };

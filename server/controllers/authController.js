@@ -19,7 +19,8 @@ import jwt from "jsonwebtoken";
 
 // Import custom function to send emails to users
 
-import { sendEmailtoUser } from "../config/EmailTemplate.js";
+import { sendEmailtoUser } from "../utils/sendMail.js";
+
 
 const OAuth2 = google.auth.OAuth2;
 
@@ -81,50 +82,66 @@ class authController {
    * sends email verification link, and saves user to database.
    *
    */
- static userRegistration = async (req, res) => {
-  const { Fname, Mname, Lname, phone, email, password } = req.body;
+  static userRegistration = async (req, res) => {
+    // Destructure incoming user data from request body
+    const { Fname, Mname, Lname, phone, email, password } = req.body;
 
-  try {
-    if (!Fname || !Lname || !phone || !email || !password) {
-      return res.status(400).json({ message: "All required fields are mandatory" });
+    try {
+      // -------------------- Required Field Validation --------------------
+      // Middle name (Mname) is optional, others are required
+      if (Fname && Lname && phone && email && password) {
+        // Check if a user with the same email already exists in DB
+        const isUser = await authModel.findOne({ email: email });
+        if (isUser) {
+          return res.status(400).json({ message: "User already exists" });
+        } else {
+          // -------------------- Password Hashing --------------------
+          const genSalt = await bcryptjs.genSalt(10); // Generate salt for hashing
+          const hashedPassword = await bcryptjs.hash(password, genSalt); // Hash the password
+
+          // -------------------- Token Generation --------------------
+          const secretKey = "amarjeetGupta"; // Secret key for JWT
+          const token = jwt.sign({ email: email }, secretKey, {
+            expiresIn: "10m", // Token expires in 10 minutes
+          });
+
+          // -------------------- Verification Link --------------------
+          const link = `https://job-protal-1-o4na.onrender.com/api/auth/verify/${token}`; // Construct verification link
+          sendEmailtoUser(link, email); // Send verification email
+
+          // -------------------- Save New User --------------------
+          const newUser = authModel({
+            Fname, // First Name
+            Mname: Mname || "", // Middle Name (optional)
+            Lname, // Last Name
+            phone, // Phone number
+            email, // Email
+            password: hashedPassword, // Store hashed password
+            isVerified: false, // User is not verified until email confirmation
+          });
+
+          // Save the user to database
+          const resUser = await newUser.save();
+
+          if (resUser) {
+            // Return success response
+            return res.status(201).json({
+              message: "Registered Successfully. Please verify your email",
+              user: resUser,
+            });
+          }
+        }
+      } else {
+        // If required fields are missing, return error
+        return res
+          .status(400)
+          .json({ message: "All required fields are mandatory" });
+      }
+    } catch (error) {
+      // Catch and return any errors
+      return res.status(400).json({ message: error.message });
     }
-
-    const isUser = await authModel.findOne({ email });
-    if (isUser) return res.status(400).json({ message: "User already exists" });
-
-    const genSalt = await bcryptjs.genSalt(10);
-    const hashedPassword = await bcryptjs.hash(password, genSalt);
-
-    const secretKey = "amarjeetGupta";
-    const token = jwt.sign({ email }, secretKey, { expiresIn: "10m" });
-
-    const link = `https://job-protal-1-o4na.onrender.com/api/auth/verify/${token}`;
-
-    console.log("📨 Calling sendEmailtoUser...");
-    await sendEmailtoUser(link, email, "link"); // <-- FIXED
-    console.log("📨 Email sending triggered");
-
-    const newUser = new authModel({
-      Fname,
-      Mname: Mname || "",
-      Lname,
-      phone,
-      email,
-      password: hashedPassword,
-      isVerified: false,
-    });
-
-    const saved = await newUser.save();
-
-    return res.status(201).json({
-      message: "Registered Successfully. Please verify your email",
-      user: saved,
-    });
-  } catch (error) {
-    return res.status(400).json({ message: error.message });
-  }
-};
-
+  };
 
   // -------------------- Logout Email Notification --------------------
 
