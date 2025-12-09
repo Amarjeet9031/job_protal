@@ -14,17 +14,14 @@ oauth2Client.setCredentials({
 });
 export const createTransporter = async () => {
   try {
-    console.log("🔍 Getting Access Token...");
-    const accessTokenResponse = await oauth2Client.getAccessToken();
+    console.log("🔍 Creating OAuth2 Transporter...");
+    console.log("CLIENT_ID:", process.env.OAUTH_CLIENT_ID ? "Loaded" : "Missing");
+    console.log("CLIENT_SECRET:", process.env.OAUTH_CLIENT_SECRET ? "Loaded" : "Missing");
+    console.log("REFRESH_TOKEN:", process.env.OAUTH_REFRESH_TOKEN ? "Loaded" : "Missing");
+    console.log("USER_EMAIL:", process.env.OAUTH_USER_EMAIL);
 
-    console.log("accessToken response:", accessTokenResponse);
-
-    const accessToken = accessTokenResponse?.token || accessTokenResponse;
-
-    if (!accessToken) {
-      console.log("❌ ACCESS TOKEN NOT GENERATED");
-      throw new Error("No access token received");
-    }
+    const accessToken = await oAuth2Client.getAccessToken();
+    console.log("🔑 Access Token:", accessToken);
 
     const transporter = nodemailer.createTransport({
       service: "gmail",
@@ -34,15 +31,14 @@ export const createTransporter = async () => {
         clientId: process.env.OAUTH_CLIENT_ID,
         clientSecret: process.env.OAUTH_CLIENT_SECRET,
         refreshToken: process.env.OAUTH_REFRESH_TOKEN,
-        accessToken,
+        accessToken: accessToken.token,
       },
     });
 
-    await transporter.verify();
-    console.log("✅ Transporter verified");
+    console.log("✅ Transporter created successfully");
     return transporter;
   } catch (err) {
-    console.error("❌ Transporter Error:", err);
+    console.error("❌ Transporter Creation Error:", err);
     throw err;
   }
 };
