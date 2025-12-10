@@ -7,7 +7,9 @@
 
 import Applicant from "../models/applicant.model.js";
 
- import { sendApplicantThankYou,sendStatusEmail } from "../config/EmailTemplate.js";
+
+ import { sendApplicantThankYou,sendStatusEmail } from "../utils/sendMail.js";
+
 
 // import {  } from "../config/EmailTemplate.js";
 import path from "path";
@@ -52,24 +54,36 @@ export const uploadResume = multer({
 //  CREATE APPLICANT + SEND EMAIL
 // --------------------------------------
 
+
+// ======================================================
+//  CREATE NEW APPLICANT + SEND "THANK YOU" EMAIL
+// ======================================================
 export const createApplicant = async (req, res) => {
   try {
+    // -------------------------
+    // 1️⃣ Resume Required
+    // -------------------------
     if (!req.file) {
       return res.status(400).json({ message: "Resume PDF is required" });
     }
 
     const { name, phone, email, age, jobTitle } = req.body;
 
-    // -----------------------------
-    // Check if this email already applied
-    // -----------------------------
+    // -------------------------
+    // 2️⃣ Prevent Duplicate Applications
+    // -------------------------
     const existingApplicant = await Applicant.findOne({ email });
+
     if (existingApplicant) {
       return res.status(400).json({
-        message: `You have already applied for ${existingApplicant.jobTitle}. You are not eligible to apply for ${jobTitle}. Please wait for admin response.`,
+        message: `You already applied for ${existingApplicant.jobTitle}. 
+You cannot apply for ${jobTitle} again until admin responds.`,
       });
     }
 
+    // -------------------------
+    // 3️⃣ Save Applicant
+    // -------------------------
     const applicant = new Applicant({
       name,
       phone,
@@ -77,65 +91,71 @@ export const createApplicant = async (req, res) => {
       age,
       jobTitle,
       resumeUrl: `/uploads/resumes/${req.file.filename}`,
-      status: "Pending", // default status
+      status: "Pending",
     });
 
     await applicant.save();
 
-    // -----------------------------
-    // Send Thank You Email to Applicant
-    // -----------------------------
+    // -------------------------
+    // 4️⃣ SEND "Thank You" EMAIL
+    // -------------------------
     await sendApplicantThankYou(email, name, jobTitle);
 
+    // -------------------------
+    // 5️⃣ Response
+    // -------------------------
     res.status(201).json({
-      message: `Thank you for applying for ${jobTitle}! An email has been sent to ${email}`,
+      message: `Thank you for applying for ${jobTitle}! A confirmation email was sent to ${email}.`,
       applicant,
     });
   } catch (error) {
-    console.error("Error creating applicant:", error);
+    console.error("❌ Error creating applicant:", error);
     res.status(500).json({ message: "Server error", error });
   }
 };
 
-
-
-
-
-// --------------------------------------
-//  UPDATE STATUS + SEND EMAIL
-// --------------------------------------
+// ======================================================
+//  UPDATE STATUS + SEND STATUS EMAIL
+// ======================================================
 export const updateApplicantStatus = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { status } = req.body;
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
 
-        const applicant = await Applicant.findByIdAndUpdate(
-            id,
-            { status },
-            { new: true }
-        );
+    // -------------------------
+    // 1️⃣ Update Status
+    // -------------------------
+    const applicant = await Applicant.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true }
+    );
 
-        if (!applicant) {
-            return res.status(404).json({ message: "Applicant not found" });
-        }
-
-        // 📩 SEND EMAIL WHEN STATUS CHANGES
-        await sendStatusEmail(
-            applicant.email,
-            applicant.name,
-            applicant.jobTitle,
-            status
-        );
-
-        res.json({
-            message: "Status updated & email sent",
-            applicant,
-        });
-
-    } catch (error) {
-        console.error("Status Update Error:", error);
-        res.status(500).json({ message: "Server error" });
+    if (!applicant) {
+      return res.status(404).json({ message: "Applicant not found" });
     }
+
+    // -------------------------
+    // 2️⃣ SEND STATUS EMAIL
+    // -------------------------
+    await sendStatusEmail(
+      applicant.email,
+      applicant.name,
+      applicant.jobTitle,
+      status
+    );
+
+    // -------------------------
+    // 3️⃣ Response
+    // -------------------------
+    res.json({
+      message: "Status updated & notification email sent",
+      applicant,
+    });
+  } catch (error) {
+    console.error("❌ Status Update Error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
 };
 
 
